@@ -27,4 +27,4 @@ def female():
     return render_template('female.html', outputs=outputs, all_data=all_data)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True
