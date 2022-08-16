@@ -377,6 +377,14 @@
                 plugins: [ChartDataLabels, backgroundPlugin, baseLabels],
                 options: {
                   indexAxis: 'y',
+                  layout: {
+                      padding: {
+                          left: 40,
+                          right: 100,
+                          top: 25,
+                          bottom: 40
+                      }
+                  },
                   parsing: {
                     xAxisKey: 'data.effect',
                     yAxisKey: 'factor'
