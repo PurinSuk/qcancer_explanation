@@ -378,12 +378,12 @@
                 options: {
                   indexAxis: 'y',
                   layout: {
-                      padding: {
-                          left: 40,
-                          right: 100,
-                          top: 25,
-                          bottom: 40
-                      }
+                    padding: {
+                      left: 40,
+                      right: 100,
+                      top: 25,
+                      bottom: 40
+                    }
                   },
                   parsing: {
                     xAxisKey: 'data.effect',
@@ -486,18 +486,25 @@
                   myChart.update();
                 }
               }
+
+              function setSuggestedMinAndMax(chart) {
+                const min_limit = Math.min(...chart.config.data.datasets[0].data.map(item => item.data.effect));
+                const max_limit = Math.max(...chart.config.data.datasets[0].data.map(item => item.data.effect));
+                const relative_padding = 0.1 * (max_limit - min_limit);
+                chart.config.options.scales.x.suggestedMin = min_limit - relative_padding;
+                chart.config.options.scales.x.suggestedMax = max_limit + relative_padding;
+              }
               
               const cancer_type_chart = document.getElementById('cancer_type_chart');
               cancer_type_chart.addEventListener('change', cancerExpChart);
               function cancerExpChart() {
                 const label = cancer_type_chart.options[cancer_type_chart.selectedIndex].text;
                 const colors = setColor(all_data[cancer_type_chart.value]);
-                delete myChart.config.options.scales.x.suggestedMin;
-                delete myChart.config.options.scales.x.suggestedMax;
                 myChart.config.options.plugins.title.text = label + " cancer risk relative to baseline";
                 myChart.config.data.datasets[0].data = all_data[cancer_type_chart.value];
                 myChart.config.data.datasets[0].backgroundColor = colors['bgColors'];
                 myChart.config.data.datasets[0].borderColor = colors['bdColors'];
+                setSuggestedMinAndMax(myChart);
                 myChart.update();
               }
             </script>
@@ -506,6 +513,8 @@
                 document.getElementById('myChart'),
                 config
               );
+              setSuggestedMinAndMax(myChart);
+              myChart.update();
             </script>
           </div>
           <div class="tab-pane fade" id="textual" role="tabpanel" aria-labelledby="textual-tab">
