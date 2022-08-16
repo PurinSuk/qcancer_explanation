@@ -497,6 +497,8 @@
                 if (min_chart_value != '' && max_chart_value != '' && min_chart_value < max_chart_value) {
                   myChart.config.options.scales.x.min = min_chart_value;
                   myChart.config.options.scales.x.max = max_chart_value;
+                  delete myChart.config.options.scales.x.suggestedMin;
+                  delete myChart.config.options.scales.x.suggestedMax;
                   myChart.update();
                 }
               }
@@ -507,6 +509,8 @@
                 const relative_padding = 0.1 * (max_limit - min_limit);
                 chart.config.options.scales.x.suggestedMin = min_limit - relative_padding;
                 chart.config.options.scales.x.suggestedMax = max_limit + relative_padding;
+                delete myChart.config.options.scales.x.min;
+                delete myChart.config.options.scales.x.max;
               }
               
               const cancer_type_chart = document.getElementById('cancer_type_chart');
