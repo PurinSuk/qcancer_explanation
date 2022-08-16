@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+
+{% block pageName %}
+  QCancer Explanation (Male)
+{% endblock %}
+
+{% block functions %}
+<script>
+  $(document).ready(function(){
+    $('#myTab a[href="#graphical"]').on('click', function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+  })
+  $(document).ready(function(){
+    $('#myTab a[href="#textual"]').on('click', function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+  })
+</script>
+
+<script>
+  const labels = {
+    'age': 'age',
+    'alcohol_cat4': 'drinking',
+    'bmi': 'bmi',
+    'b_chronicpan': 'chronic pancreatitis',
+    'b_copd': 'chronic obstructive airways disease (COPD)',
+    'b_type2': 'type 2 diabetes',
+    'c_hb': 'anaemia',
+    'fh_gicancer': 'GI cancer in family',
+    'fh_prostatecancer': 'prostate cancer in family',
+    'new_abdodist': 'abdominal swelling',
+    'new_abdopain': 'abdominal pain',
+    'new_appetiteloss': 'loss of appetite',
+    'new_dysphagia': 'difficulty swallowing',
+    'new_gibleed': 'blood when vomit',
+    'new_haematuria': 'blood in urine',
+    'new_haemoptysis': 'blood when cough',
+    'new_heartburn': 'heartburn',
+    'new_indigestion': 'indigestion',
+    'new_necklump': 'necklump',
+    'new_nightsweats': 'night sweats',
+    'new_rectalbleed': 'rectal bleeding',
+    'new_testicularlump': 'testicular lump',
+    'new_testispain': 'testicular pain',
+    'new_vte': 'venous thromboembolism',
+    'new_weightloss': 'weight loss',
+    's1_bowelchange': 'change in bowel habit',
+    's1_constipation': 'constipation',
+    's1_cough': 'cough',
+    's1_impotence': 'impotence',
+    's1_nocturia': 'nocturia',
+    's1_urinaryfreq': 'urinary frequency',
+    's1_urinaryretention': 'urinary retention',
+    'smoke_cat': 'smoking',
+  }
+  function getFullLabel(label) {
+    return labels[label];
+  }
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  {% for message in get_flashed_messages() %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+      </svg>
+      {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+
+  <div class="row">
+    <!-- This is for user input -->
+    <div class="col-4">
+      <a href="{{ url_for('female') }}" class="btn btn-secondary btn-sm">Female</a>
+      <form action="#" method="post">
+        <fieldset>
+          <legend>About you</legend>
+          <label>Age (25-89): </label>
+          <input type="number" id="age" name="age" min="25" max="89" required value="{{request.form['age']}}"><br>
+        </fieldset>
+        <br>
+        <fieldset>
+          <legend>Clinical information</legend>
+          <label>Smoking status: </label>
+          <select name="smoke_cat" id="smoke_cat">
+            <option value="non" {% if request.form['smoke_cat'] == 'non' %} selected="selected"{% endif %}>non-smoker</option>
+            <option value="ex" {% if request.form['smoke_cat'] == 'ex' %} selected="selected"{% endif %}>ex-smoker</option>
+            <option value="light" {% if request.form['smoke_cat'] == 'light' %} selected="selected"{% endif %}>light smoker (less than 10)</option>
+            <option value="moderate" {% if request.form['smoke_cat'] == 'moderate' %} selected="selected"{% endif %}>moderate smoker (10 to 19)</option>
+            <option value="heavy" {% if request.form['smoke_cat'] == 'heavy' %} selected="selected"{% endif %}>heavy smoker (20 or over)</option>
+          </select>
+          <br>
+          <label>Alcohol status: </label>
+          <select name="alcohol_cat4" id="alcohol_cat4">
+            <option value="no" {% if request.form['alcohol_cat4'] == 'no' %} selected="selected"{% endif %}>non-drinker</option>
+            <option value="< 1 unit per day" {% if request.form['alcohol_cat4'] == '< 1 unit per day' %} selected="selected"{% endif %}>< 1 unit per day</option>
+            <option value="1-2 units per day" {% if request.form['alcohol_cat4'] == '1-2 units per day' %} selected="selected"{% endif %}>1-2 units per day</option>
+            <option value="3+ units per day" {% if request.form['alcohol_cat4'] == '3+ units per day' %} selected="selected"{% endif %}>3+ units per day</option>
+          </select>
+          <br>
+          <fieldset>
+            <legend>Body mass index</legend>
+            <ul>
+              <li>Setting the height and the weight automatically updates the BMI value</li>
+              <li>Setting the BMI will reset height and weight to zero</li>
+            </ul>
+            <label>Height (in cm): </label>
+            <input type="number" id="height" name="height" step="any" required value="{{request.form['height']}}">
+            <label>Weight (in kg): </label>
+            <input type="number" id="weight" name="weight" step="any" required value="{{request.form['weight']}}">
+            <label>BMI (between 20 and 40): </label>
+            <input type="number" id="bmi" name="bmi" min="20" max="40" step="any" required value="{{request.form['bmi']}}">
+            <script>
+              const height_elem = document.getElementById('height');
+              const weight_elem = document.getElementById('weight');
+              const bmi_elem = document.getElementById('bmi');
+            
+              height_elem.addEventListener('change', calculateBMI);
+              weight_elem.addEventListener('change', calculateBMI);
+              bmi_elem.addEventListener('change', resetHeightAndWeight);
+            
+              function calculateBMI() {
+                try {
+                  bmi_elem.value = (weight_elem.value / ((height_elem.value / 100) ** 2)).toFixed(3);
+                } catch(err) {
+                  bmi_elem.value = 0.0;
+                }
+              }
+            
+              function resetHeightAndWeight() {
+                height_elem.value = 0.0;
+                weight_elem.value = 0.0;
+              }
+            
+            </script>
+          </fieldset>
+          <br>
+          <fieldset>
+            <legend>Do you have...</legend>
+            <label>a family history of gastrointestinal cancer?</label>
+            <input type="checkbox" id="fh_gicancer" name="fh_gicancer" {{ "checked" if 'fh_gicancer' in request.form }}>
+            <br>
+            <label>a family history of prostate cancer?	</label>
+            <input type="checkbox" id="fh_prostatecancer" name="fh_prostatecancer" {{ "checked" if 'fh_prostatecancer' in request.form }}>
+            <br>
+            <label>type 2 diabetes?</label>
+            <input type="checkbox" id="b_type2" name="b_type2" {{ "checked" if 'b_type2' in request.form }}>
+            <br>
+            <label>chronic pancreatitis?</label>
+            <input type="checkbox" id="b_chronicpan" name="b_chronicpan" {{ "checked" if 'b_chronicpan' in request.form }}>
+            <br>
+            <label>chronic obstructive airways disease (COPD)?</label>
+            <input type="checkbox" id="b_copd" name="b_copd" {{ "checked" if 'b_copd' in request.form }}>
+          </fieldset>
+          <br>
+          <fieldset>
+            <legend>Do you currently have...</legend>
+            <label>loss of appetite?</label>
+            <input type="checkbox" id="new_appetiteloss" name="new_appetiteloss" {{ "checked" if 'new_appetiteloss' in request.form }}>
+            <br>
+            <label>unintentional weight loss?</label>
+            <input type="checkbox" id="new_weightloss" name="new_weightloss" {{ "checked" if 'new_weightloss' in request.form }}>
+            <br>
+            <label>abdominal pain?</label>
+            <input type="checkbox" id="new_abdopain" name="new_abdopain" {{ "checked" if 'new_abdopain' in request.form }}>
+            <br>
+            <label>abdominal swelling?</label>
+            <input type="checkbox" id="new_abdodist" name="new_abdodist" {{ "checked" if 'new_abdodist' in request.form }}>
+            <br>
+            <label>difficulty swallowing?</label>
+            <input type="checkbox" id="new_dysphagia" name="new_dysphagia" {{ "checked" if 'new_dysphagia' in request.form }}>
+            <br>
+            <label>heartburn?</label>
+            <input type="checkbox" id="new_heartburn" name="new_heartburn" {{ "checked" if 'new_heartburn' in request.form }}>
+            <br>
+            <label>indigestion?</label>
+            <input type="checkbox" id="new_indigestion" name="new_indigestion" {{ "checked" if 'new_indigestion' in request.form }}>
+            <br>
+            <label>rectal bleeding?</label>
+            <input type="checkbox" id="new_rectalbleed" name="new_rectalbleed" {{ "checked" if 'new_rectalbleed' in request.form }}>
+            <br>
+            <label>blood when you vomit?</label>
+            <input type="checkbox" id="new_gibleed" name="new_gibleed" {{ "checked" if 'new_gibleed' in request.form }}>
+            <br>
+            <label>blood when you cough?</label>
+            <input type="checkbox" id="new_haemoptysis" name="new_haemoptysis" {{ "checked" if 'new_haemoptysis' in request.form }}>
+            <br>
+            <label>blood in your urine?</label>
+            <input type="checkbox" id="new_haematuria" name="new_haematuria" {{ "checked" if 'new_haematuria' in request.form }}>
+            <br>
+            <label>a testicular lump?</label>
+            <input type="checkbox" id="new_testicularlump" name="new_testicularlump" {{ "checked" if 'new_testicularlump' in request.form }}>
+            <br>
+            <label>testicular pain?</label>
+            <input type="checkbox" id="new_testispain" name="new_testispain" {{ "checked" if 'new_testispain' in request.form }}>
+            <br>
+            <label>a lump in your neck?</label>
+            <input type="checkbox" id="new_necklump" name="new_necklump" {{ "checked" if 'new_necklump' in request.form }}>
+            <br>
+            <label>night sweats?</label>
+            <input type="checkbox" id="new_nightsweats" name="new_nightsweats" {{ "checked" if 'new_nightsweats' in request.form }}>
+            <br>
+            <label>a venous thromboembolism?</label>
+            <input type="checkbox" id="new_vte" name="new_vte" {{ "checked" if 'new_vte' in request.form }}>
+            <br>
+          </fieldset>
+          <fieldset>
+            <legend>In the last year have you seen your GP with...</legend>
+            <label>change in bowel habit?</label>
+            <input type="checkbox" id="s1_bowelchange" name="s1_bowelchange" {{ "checked" if 's1_bowelchange' in request.form }}>
+            <br>
+            <label>constipation?</label>
+            <input type="checkbox" id="s1_constipation" name="s1_constipation" {{ "checked" if 's1_constipation' in request.form }}>
+            <br>
+            <label>cough?</label>
+            <input type="checkbox" id="s1_cough" name="s1_cough" {{ "checked" if 's1_cough' in request.form }}>
+            <br>
+            <label>anaemia (Haemoglobin < 11g/dL)?</label>
+            <input type="checkbox" id="c_hb" name="c_hb" {{ "checked" if 'c_hb' in request.form }}>
+            <br>
+            <label>urinary retention?</label>
+            <input type="checkbox" id="s1_urinaryretention" name="s1_urinaryretention" {{ "checked" if 's1_urinaryretention' in request.form }}>
+            <br>
+            <label>urinary frequency?</label>
+            <input type="checkbox" id="s1_urinaryfreq" name="s1_urinaryfreq" {{ "checked" if 's1_urinaryfreq' in request.form }}>
+            <br>
+            <label>nocturia (passing urine at night)?</label>
+            <input type="checkbox" id="s1_nocturia" name="s1_nocturia" {{ "checked" if 's1_nocturia' in request.form }}>
+            <br>
+            <label>impotence?</label>
+            <input type="checkbox" id="s1_impotence" name="s1_impotence" {{ "checked" if 's1_impotence' in request.form }}>
+            <br>
+          </fieldset>
+        </fieldset>
+        <br><br>
+        <input class="btn btn-success" type="submit" value="Submit">
+        <div class="space">
+        </div>
+        <a href="{{ url_for('male') }}" class="btn btn-danger">Reset</a>
+      </form>
+    </div>
+
+    <!-- This is for output and explanation -->
+    {% if outputs %}
+    <div class="col-8">
+
+      <!-- Output part -->
+      <div class="row">
+        <h4>Outputs</h4>
+        <div style="text-indent: 15%">
+        {% for key in outputs %}
+          <p><b>{{key}}:</b> {{ "%.6f"|format(outputs[key])}} %</p>
+        {% endfor %}
+        </div>
+      </div>
+
+      <!-- Explanation part -->
+      <div class="row">
+        <h4>Explanation</h4>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="graphical-tab" data-toggle="tab" href="#graphical" role="tab" aria-controls="graphical" aria-selected="true">Graphical</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="textual-tab" data-toggle="tab" href="#textual" role="tab" aria-controls="textual" aria-selected="false">Textual</a>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+          <script>
+            const all_data = {{ all_data|tojson|safe }};
+          </script>
+          <div class="tab-pane fade show active" id="graphical" role="tabpanel" aria-labelledby="graphical-tab">
+            <br>
+            <span>
+            <label>Select cancer type: </label>
+            <select name="cancer_type_chart" id="cancer_type_chart">
+              <option value="blood">Blood</option>
+              <option value="colorectal">Colorectal</option>
+              <option value="gastro">Gastro</option>
+              <option value="lung">Lung</option>
+              <option value="other">Other</option>
+              <option value="pancreatic">Pancreatic</option>
+              <option value="prostate">Prostate</option>
+              <option value="renal">Renal</option>
+              <option value="testicular">Testicular</option>
+            </select>
+            </span>
+            <div class="space"></div>
+            <span>Min: </span>
+            <input type="number" id="min_chart" name="min_chart">
+            <div class="space"></div>
+            <span>Max: </span>
+            <input type="number" id="max_chart" name="max_chart">
+            <div class="space"></div>
+            <button type="button" onClick="setRange()">Set axis range</button>
+            <div class="chartBox">
+              <canvas id="myChart"></canvas>
+              <div class="d-flex justify-content-center">
+                <button onclick="download()">Download</button>
+              </div>
+            </div>
+
+            <script>
+              function download() {
+                const imageLink = document.createElement('a');
+                const canvas = document.getElementById('myChart');
+                imageLink.download = 'chart.png';
+                imageLink.href = canvas.toDataURL('image/png', 1);
+                imageLink.click();
+              }
+            </script>
+
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js" 
+            integrity="sha512-Tfw6etYMUhL4RTki37niav99C6OHwMDB2iBT5S5piyHO+ltK2YX8Hjy9TXxhE1Gm/TmAV0uaykSpnHKFIAif/A==" 
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+            <script>
+              const initial_data = all_data['blood'];
+              const initial_colors = setColor(initial_data);
+              
+              const data = {
+                datasets: [{
+                    label: 'hi',
+                    data: initial_data,
+                    backgroundColor: initial_colors['bgColors'],
+                    borderColor: initial_colors['bdColors'],
+                    borderWidth: 1,
+                    minBarLength: 2,
+                    datalabels: {
+                      color: 'black'
+                    }
+                }]
+              };
+
+              // canvas background plugin
+              const backgroundPlugin = {
+                id: 'background-plugin',
+                beforeDraw: (chart) => {
+                  const ctx = chart.canvas.getContext('2d');
+                  ctx.save();
+                  ctx.globalCompositeOperation = 'destination-over';
+                  ctx.fillStyle='white';
+                  ctx.fillRect(0, 0, chart.width, chart.height);
+                  ctx.restore();
+                }
+              }
+
+              // baseLabels plugin block
+              const baseLabels = {
+                id: 'baseLabels',
+                afterDatasetsDraw(chart, args, pluginOptions) {
+                  const { ctx, scales: { x, y } } = chart;
+                  ctx.font = '15px sans-serif';
+                  ctx.fillStyle = 'gray';
+
+                  chart.data.datasets[0].data.forEach((datapoint, index) => {
+                    const datasetArray = [];
+                    ctx.textAlign = datapoint.data.effect > 0 ? 'right' : 'left';
+                    ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index));
+                  })
+                }
+              }
+              
+              const config = {
+                type: 'bar',
+                data: data,
+                plugins: [ChartDataLabels, backgroundPlugin, baseLabels],
+                options: {
+                  indexAxis: 'y',
+                  parsing: {
+                    xAxisKey: 'data.effect',
+                    yAxisKey: 'factor'
+                  },
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: 'Blood cancer risk relative to baseline',
+                      font: {
+                        size: 30
+                      }
+                    },
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                      displayColors: false,
+                      callbacks: {
+                        title: (context) => getFullLabel(context[0].raw.factor),
+                        label: (context) => [`effect: ${context.raw.data.effect.toPrecision(3)}%`]
+                      }
+                    },
+                    datalabels: {
+                      anchor: (context) => {
+                        const anchor = [];
+                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
+                          anchor.push('end')
+                        } else {
+                          anchor.push('start')
+                        }
+                        return anchor;
+                      },
+                      align: (context) => {
+                        const align = [];
+                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
+                          align.push('right')
+                        } else {
+                          align.push('left')
+                        }
+                        return align;
+                      },
+                      formatter: (value, context) => value.data.value,
+                      font: {
+                        size: 16,
+                      },
+                    }
+                  },
+                  scales: {
+                    x: {
+                      position: 'top',
+                      beginAtZero: true,
+                      ticks: {
+                        fontSize: 20,
+                        callback: function (value, index, values) {
+                          return value + "%";
+                        }
+                      }
+                    },
+                    y: {
+                      ticks: {
+                        fontSize: 20,
+                        padding: 20,
+                        callback: function (value, index) {
+                          return getFullLabel(this.getLabelForValue(index))
+                        }
+                      }
+                    }
+                  }
+                }
+              };
+
+              function setColor(data) {
+                let bgColors = []
+                let bdColors = []
+                for (let i = 0; i < data.length; i++) {
+                  if (data[i].data.effect < 0) {
+                    bgColors[i] = 'rgba(75, 192, 192, 0.2)'
+                    bdColors[i] = 'rgba(75, 192, 192, 1)'
+                  } else if (data[i].data.effect > 0) {
+                    bgColors[i] = 'rgba(255, 99, 132, 0.2)'
+                    bdColors[i] = 'rgba(255, 99, 132, 1)'
+                  } else {
+                    bgColors[i] = 'rgba(54, 162, 235, 0.2)'
+                    bdColors[i] = 'rgba(54, 162, 235, 1)'
+                  }
+                }
+                return {
+                  'bgColors': bgColors,
+                  'bdColors': bdColors
+                };
+              }
+
+              function setRange() {
+                const min_chart_value = document.getElementById('min_chart').value
+                const max_chart_value = document.getElementById('max_chart').value
+                if (min_chart_value != '' && max_chart_value != '' && min_chart_value < max_chart_value) {
+                  myChart.config.options.scales.x.suggestedMin = min_chart_value;
+                  myChart.config.options.scales.x.suggestedMax = max_chart_value;
+                  myChart.update();
+                }
+              }
+              
+              const cancer_type_chart = document.getElementById('cancer_type_chart');
+              cancer_type_chart.addEventListener('change', cancerExpChart);
+              function cancerExpChart() {
+                const label = cancer_type_chart.options[cancer_type_chart.selectedIndex].text;
+                const colors = setColor(all_data[cancer_type_chart.value]);
+                delete myChart.config.options.scales.x.suggestedMin;
+                delete myChart.config.options.scales.x.suggestedMax;
+                myChart.config.options.plugins.title.text = label + " cancer risk relative to baseline";
+                myChart.config.data.datasets[0].data = all_data[cancer_type_chart.value];
+                myChart.config.data.datasets[0].backgroundColor = colors['bgColors'];
+                myChart.config.data.datasets[0].borderColor = colors['bdColors'];
+                myChart.update();
+              }
+            </script>
+            <script>
+              const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+              );
+            </script>
+          </div>
+          <div class="tab-pane fade" id="textual" role="tabpanel" aria-labelledby="textual-tab">
+            <br>
+            <label>Select cancer type: </label>
+            <select name="cancer_type_text" id="cancer_type_text">
+              <option value="blood">Blood</option>
+              <option value="colorectal">Colorectal</option>
+              <option value="gastro">Gastro</option>
+              <option value="lung">Lung</option>
+              <option value="other">Other</option>
+              <option value="pancreatic">Pancreatic</option>
+              <option value="prostate">Prostate</option>
+              <option value="renal">Renal</option>
+              <option value="testicular">Testicular</option>
+            </select>
+            <br><br>
+            <p id="mytext"></p>
+
+            <script>
+              function getExpTextLabel(data) {
+                const fullLabel = getFullLabel(data.factor)
+                if (data.factor == 'age' || data.factor == 'bmi') {
+                  const value = Number.isInteger(data.data.value) ? data.data.value : data.data.value.toFixed(3);
+                  return `${fullLabel} of ${value}`
+                } else if (data.factor == 'smoke_cat' || data.factor == 'alcohol_cat4') {
+                  return `${data.data.value} ${fullLabel}`
+                } else {
+                  return (data.data.value == 'no' ? 'no' : '') + ` ${fullLabel}`
+                }
+              }
+
+              function generateExplanation(header, data) {
+                let html = `<h2>${header} cancer risk relative to baseline</h2><ul>`
+                for (const elem of data) {
+                  if (elem.data.effect > 0) {
+                    html += `<li><i>${getExpTextLabel(elem)}</i> increased this risk by <span style="color:red">${elem.data.effect.toFixed(3)}%</span> <i>(relative to ${elem.data.base})</i></li>`
+                  } else if (elem.data.effect < 0) {
+                    html += `<li><i>${getExpTextLabel(elem)}</i> decreased this risk by <span style="color:green">${-elem.data.effect.toFixed(3)}%</span> <i>(relative to ${elem.data.base})</i></li>`
+                  } else {
+                    html += `<li><i>${getExpTextLabel(elem)}</i> didn't increase nor decrease this risk <i>(relative to ${elem.data.base})</i></li>`
+                  }
+                }
+                html += `</ul>`;
+                return html;
+              }
+              function cancerExpText() {
+                const header = cancer_type_text.options[cancer_type_text.selectedIndex].text;
+                const index = cancer_type_text.value;
+                document.getElementById('mytext').innerHTML = generateExplanation(header, all_data[index]);
+              }
+              document.getElementById('mytext').innerHTML = generateExplanation('Blood', all_data['blood']);
+              const cancer_type_text = document.getElementById('cancer_type_text');
+              cancer_type_text.addEventListener('change', cancerExpText);
+            </script>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

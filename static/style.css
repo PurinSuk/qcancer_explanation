@@ -1,0 +1,22 @@
+fieldset { 
+  all: initial; 
+  border: 1px solid black; 
+  padding : 5px 20px 10px 10px; 
+  font-family:Arial; 
+  font-size: 15px;
+  line-height: 150%;
+  width: 82%;
+} 
+
+legend { 
+  all: initial; 
+  color: black; 
+  font-family: Arial; 
+  font-size: 15px;
+}
+
+.space {
+  width: 10px;
+  height: auto;
+  display: inline-block;
+}

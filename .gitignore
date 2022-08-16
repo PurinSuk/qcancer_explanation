@@ -1,0 +1,7 @@
+# ignore virtual environment files
+bin
+include
+lib
+lib64
+share
+pyvenv.cfg
