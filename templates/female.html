@@ -58,7 +58,19 @@
     's1_constipation': 'constipation',
     's1_cough': 'cough',
     'smoke_cat': 'smoking',
+    "blood": 'Blood', 
+    "breast": 'Breast', 
+    "cervical": 'Cervical', 
+    "colorectal": 'Colorectal', 
+    "gastro": 'Gastro-oesophageal', 
+    "lung": 'Lung',
+    "other": 'Other', 
+    "ovarian": 'Ovarian', 
+    "pancreatic": 'Pancreatic', 
+    "renal": 'Renal tract', 
+    "uterine": 'Uterine'
   }
+
   function getFullLabel(label) {
     return labels[label];
   }
@@ -266,10 +278,10 @@
 
       <!-- Output part -->
       <div class="row">
-        <h4>Outputs</h4>
+        <h4>Cancer risks</h4>
         <div style="text-indent: 15%">
         {% for key in outputs %}
-          <p><b>{{key}}:</b> {{ "%.6f"|format(outputs[key])}} %</p>
+          <p><b>{{labels[key]}}:</b> {{ "%.6f"|format(outputs[key])}} %</p>
         {% endfor %}
         </div>
       </div>
@@ -299,12 +311,12 @@
               <option value="breast">Breast</option>
               <option value="cervical">Cervical</option>
               <option value="colorectal">Colorectal</option>
-              <option value="gastro">Gastro</option>
+              <option value="gastro">Gastro-oesophageal</option>
               <option value="lung">Lung</option>
               <option value="other">Other</option>
               <option value="ovarian">Ovarian</option>
               <option value="pancreatic">Pancreatic</option>
-              <option value="renal">Renal</option>
+              <option value="renal">Renal tract</option>
               <option value="uterine">Uterine</option>
             </select>
             </span>
@@ -516,9 +528,8 @@
               const cancer_type_chart = document.getElementById('cancer_type_chart');
               cancer_type_chart.addEventListener('change', cancerExpChart);
               function cancerExpChart() {
-                const label = cancer_type_chart.options[cancer_type_chart.selectedIndex].text;
                 const colors = setColor(all_data[cancer_type_chart.value]);
-                myChart.config.options.plugins.title.text = label + " cancer risk relative to baseline";
+                myChart.config.options.plugins.title.text = getFullLabel(cancer_type_chart.value) + " cancer risk relative to baseline";
                 myChart.config.data.datasets[0].data = all_data[cancer_type_chart.value];
                 myChart.config.data.datasets[0].backgroundColor = colors['bgColors'];
                 myChart.config.data.datasets[0].borderColor = colors['bdColors'];
@@ -543,12 +554,12 @@
               <option value="breast">Breast</option>
               <option value="cervical">Cervical</option>
               <option value="colorectal">Colorectal</option>
-              <option value="gastro">Gastro</option>
+              <option value="gastro">Gastro-oesophageal</option>
               <option value="lung">Lung</option>
               <option value="other">Other</option>
               <option value="ovarian">Ovarian</option>
               <option value="pancreatic">Pancreatic</option>
-              <option value="renal">Renal</option>
+              <option value="renal">Renal tract</option>
               <option value="uterine">Uterine</option>
             </select>
             <br><br>
@@ -582,9 +593,8 @@
                 return html;
               }
               function cancerExpText() {
-                const header = cancer_type_text.options[cancer_type_text.selectedIndex].text;
                 const index = cancer_type_text.value;
-                document.getElementById('mytext').innerHTML = generateExplanation(header, all_data[index]);
+                document.getElementById('mytext').innerHTML = generateExplanation(getFullLabel(index), all_data[index]);
               }
               document.getElementById('mytext').innerHTML = generateExplanation('Blood', all_data['blood']);
               const cancer_type_text = document.getElementById('cancer_type_text');

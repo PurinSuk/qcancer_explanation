@@ -4,6 +4,13 @@ from collections import defaultdict
 from qcancer_male.qcancer_male_funcs import *
 from qcancer_female.qcancer_female_funcs import *
 
+# Labels to be shown on the output page
+male_labels = {'blood': 'Blood', 'colorectal': 'Colorectal', 'gastro': 'Gastro-oesophageal', 'lung': 'Lung',
+               'other': 'Other', 'pancreatic': 'Pancreatic', 'prostate': 'Prostate', 'renal': 'Renal tract', 'testicular': 'Testicular'}
+female_labels = {"blood": 'Blood', "breast": 'Breast', "cervical": 'Cervical', "colorectal": 'Colorectal',
+                 "gastro": 'Gastro-oesophageal', "lung": 'Lung', "other": 'Other', "ovarian": 'Ovarian', 
+                 "pancreatic": 'Pancreatic', "renal": 'Renal tract', "uterine": 'Uterine'}
+
 # <================================ qcancer cmd part ================================>
 def is_boolean(b):
     return isinstance(b, bool)
@@ -188,8 +195,8 @@ def calculateAllScoresMale(args):
 # This function calculates the outputs variable from a given args
 def calculateOutputsFromArgsMale(args):
     results = calculateAllScoresMale(args)
-    labels = ['Blood', 'Colorectal', 'Gastro', 'Lung',
-               'Other', 'Pancreatic', 'Prostate', 'Renal', 'Testicular']
+    labels = ['blood', 'colorectal', 'gastro', 'lung',
+               'other', 'pancreatic', 'prostate', 'renal', 'testicular']
     outputs = {key: value for key, value in zip(labels, results)}
     return outputs
 # <------------------------- End of crucial function 1 ------------------------->
@@ -293,7 +300,7 @@ def calculateAllDataMale(form, outputs):
             if change:
                 base_outputs = calculateOutputsFromArgsMale(base_args)
                 all_data[cancer_type].append({'factor': factor, 'data': {'value': inputs[factor], 
-                'base': bases_male[cancer_type][factor], 'effect': outputs[cancer_type.capitalize()] - base_outputs[cancer_type.capitalize()]}})
+                'base': bases_male[cancer_type][factor], 'effect': outputs[cancer_type] - base_outputs[cancer_type]}})
         # Only keep the six most effective factors
         all_data[cancer_type] = sorted(all_data[cancer_type], key=lambda d: abs(d['data']['effect']), reverse=True)[:6]
 
@@ -415,7 +422,7 @@ def calculateAllScoresFemale(args):
 # This function calculates the outputs variable from a given args
 def calculateOutputsFromArgsFemale(args):
     results = calculateAllScoresFemale(args)
-    labels = ["Blood", "Breast", "Cervical", "Colorectal", "Gastro","Lung","Other", "Ovarian", "Pancreatic", "Renal", "Uterine"]
+    labels = ["blood", "breast", "cervical", "colorectal", "gastro", "lung", "other", "ovarian", "pancreatic", "renal", "uterine"]
     outputs = {key: value for key, value in zip(labels, results)}
     return outputs
 # <------------------------- End of crucial function 1 ------------------------->
@@ -482,7 +489,7 @@ def calculateAllDataFemale(form, outputs):
             if change:
                 base_outputs = calculateOutputsFromArgsFemale(base_args)
                 all_data[cancer_type].append({'factor': factor, 'data': {'value': inputs[factor], 
-                'base': bases_female[cancer_type][factor], 'effect': outputs[cancer_type.capitalize()] - base_outputs[cancer_type.capitalize()]}})
+                'base': bases_female[cancer_type][factor], 'effect': outputs[cancer_type] - base_outputs[cancer_type]}})
         # Only keep the six most effective factors
         all_data[cancer_type] = sorted(all_data[cancer_type], key=lambda d: abs(d['data']['effect']), reverse=True)[:6]
 

@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 
-from utils import calculateOutputsMale, calculateAllDataMale, calculateOutputsFemale, calculateAllDataFemale
+from utils import calculateOutputsMale, calculateAllDataMale, calculateOutputsFemale, calculateAllDataFemale, male_labels, female_labels
 
 app = Flask(__name__)
 
@@ -15,7 +15,7 @@ def male():
     if request.method == 'POST':
         outputs = calculateOutputsMale(request.form)
         all_data = calculateAllDataMale(request.form, outputs)
-    return render_template('male.html', outputs=outputs, all_data=all_data)
+    return render_template('male.html', outputs=outputs, all_data=all_data, labels=male_labels)
 
 @app.route('/female', methods=['GET', 'POST'])
 def female():
@@ -24,7 +24,7 @@ def female():
     if request.method == 'POST':
         outputs = calculateOutputsFemale(request.form)
         all_data = calculateAllDataFemale(request.form, outputs)
-    return render_template('female.html', outputs=outputs, all_data=all_data)
+    return render_template('female.html', outputs=outputs, all_data=all_data, labels=female_labels)
 
 if __name__ == "__main__":
     app.run(debug=True)
