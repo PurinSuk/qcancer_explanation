@@ -81,15 +81,15 @@ all_data_male = {
 }
 
 # Change bases here for male
-bases_male = {'blood': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'colorectal': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'gastro': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'lung': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'other': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'pancreatic': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'prostate': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'renal': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'testicular': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'})}
+bases_male = {'blood': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'colorectal': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'gastro': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'lung': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'other': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'pancreatic': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'prostate': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'renal': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'testicular': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'})}
 
 def transformAndScaleAgeMale(age):
     # Applying the fractional polynomial transforms (includes scaling)
@@ -313,17 +313,17 @@ def calculateAllDataMale(form, outputs):
 # <================================ Female part ================================>
 
 # Change bases here for female
-bases_female = {'blood': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'breast': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'cervical': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'colorectal': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'gastro': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'lung': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'other': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'ovarian': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
-        'pancreatic': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}),
-        'renal': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}),
-        'uterine': defaultdict(lambda: 'no', {'age': 25, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'})}
+bases_female = {'blood': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'breast': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'cervical': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'colorectal': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'gastro': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'lung': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'other': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'ovarian': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}), 
+        'pancreatic': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}),
+        'renal': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'}),
+        'uterine': defaultdict(lambda: 'no', {'age': 40, 'bmi': 25, 'alcohol_cat4': 'no', 'smoke_cat': 'non'})}
 
 def transformAndScaleAgeFemale(age):
     # Applying the fractional polynomial transforms (includes scaling)
