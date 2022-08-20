@@ -18,6 +18,12 @@
       $(this).tab('show')
     })
   })
+  $(document).ready(function(){
+    $('#myTab a[href="#shap"]').on('click', function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+  })
 </script>
 
 <script>
@@ -267,7 +273,7 @@
         <h4>Cancer risks</h4>
         <div style="text-indent: 15%">
         {% for key in outputs %}
-          <p><b>{{labels[key]}}:</b> {{ "%.6f"|format(outputs[key])}} %</p>
+          <p><b>{{labels[key]}}:</b> {{ "%.4f"|format(outputs[key])}} %</p>
         {% endfor %}
         </div>
       </div>
@@ -282,11 +288,17 @@
           <li class="nav-item">
             <a class="nav-link" id="textual-tab" data-toggle="tab" href="#textual" role="tab" aria-controls="textual" aria-selected="false">Textual</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" id="shap-tab" data-toggle="tab" href="#shap" role="tab" aria-controls="shap" aria-selected="false">SHAP</a>
+          </li>
         </ul>
 
         <div class="tab-content" id="myTabContent">
           <script>
             const all_data = {{ all_data|tojson|safe }};
+            const shap_values = {{ shap_values|tojson|safe }};
+            const outputs = {{ outputs|tojson|safe }};
+            const base_risks = {{ base_risks|tojson|safe }};
           </script>
           <div class="tab-pane fade show active" id="graphical" role="tabpanel" aria-labelledby="graphical-tab">
             <br>
@@ -315,14 +327,14 @@
             <div class="chartBox">
               <canvas id="myChart"></canvas>
               <div class="d-flex justify-content-center">
-                <button onclick="download()">Download</button>
+                <button onclick="download('myChart')">Download</button>
               </div>
             </div>
 
             <script>
-              function download() {
+              function download(chartName) {
                 const imageLink = document.createElement('a');
-                const canvas = document.getElementById('myChart');
+                const canvas = document.getElementById(chartName);
                 imageLink.download = 'chart.png';
                 imageLink.href = canvas.toDataURL('image/png', 1);
                 imageLink.click();
@@ -505,8 +517,8 @@
                 const relative_padding = 0.1 * (max_limit - min_limit);
                 chart.config.options.scales.x.suggestedMin = min_limit - relative_padding;
                 chart.config.options.scales.x.suggestedMax = max_limit + relative_padding;
-                delete myChart.config.options.scales.x.min;
-                delete myChart.config.options.scales.x.max;
+                delete chart.config.options.scales.x.min;
+                delete chart.config.options.scales.x.max;
               }
               
               const cancer_type_chart = document.getElementById('cancer_type_chart');
@@ -581,6 +593,220 @@
               document.getElementById('mytext').innerHTML = generateExplanation('Blood', all_data['blood']);
               const cancer_type_text = document.getElementById('cancer_type_text');
               cancer_type_text.addEventListener('change', cancerExpText);
+            </script>
+          </div>
+          <!-- SHAP content -->
+          <div class="tab-pane fade" id="shap" role="tabpanel" aria-labelledby="shap-tab">
+            <br>
+            <span>
+            <label>Select cancer type: </label>
+            <select name="cancer_type_shap" id="cancer_type_shap">
+              <option value="blood">Blood</option>
+              <option value="colorectal">Colorectal</option>
+              <option value="gastro">Gastro-oesophageal</option>
+              <option value="lung">Lung</option>
+              <option value="other">Other</option>
+              <option value="pancreatic">Pancreatic</option>
+              <option value="prostate">Prostate</option>
+              <option value="renal">Renal tract</option>
+              <option value="testicular">Testicular</option>
+            </select>
+            </span>
+            <div class="space"></div>
+            <span>Min: </span>
+            <input type="number" id="min_chart_shap" name="min_chart_shap">
+            <div class="space"></div>
+            <span>Max: </span>
+            <input type="number" id="max_chart_shap" name="max_chart_shap">
+            <div class="space"></div>
+            <button type="button" onClick="setRangeShap()">Set axis range</button>
+            <br><br>
+            <!-- Text before SHAP chart -->
+            <p id="myShapText"></p>
+
+            <script>
+              // This tag sets initial text before SHAP chart + define all functions for generating SHAP text explanation
+              function generateShapExplanation(header, output, base) {
+                let html = `<h2>${header} cancer</h2>`;
+                html += `<p style="margin:0">The base risk for this cancer type is ${base.toFixed(4)}%</p>`;
+                html += `<p style="margin:0">Your risk is ${output.toFixed(4)}%</p>`;
+                const diff = (output - base).toFixed(4);
+                if (diff > 0) {
+                  html += `<p style="margin:0"}>The increase of ${diff}% is partly contributed by these factors:</p>`;
+                } else if (diff < 0) {
+                  html += `<p style="margin:0">The decrease of ${-diff}% is partly contributed by these factors:</p>`;
+                } else {
+                  html += `<p style="margin:0">There is no difference between your risk and the base risk.</p>`;
+                }
+                return html;
+              }
+
+              // Set the initial text before SHAP chart
+              document.getElementById('myShapText').innerHTML = generateShapExplanation('Blood', outputs['blood'], base_risks['blood']);
+            </script>
+
+            <div class="chartBox">
+              <canvas id="myShapChart"></canvas>
+              <div class="d-flex justify-content-center">
+                <button onclick="download('myShapChart')">Download</button>
+              </div>
+            </div>
+            <br><br>
+
+            <script>
+              const initial_shap_data = shap_values['blood'];
+              const initial_shap_colors = setColorShap(initial_shap_data);
+              
+              const shap_data = {
+                datasets: [{
+                    label: 'hi',
+                    data: initial_shap_data,
+                    backgroundColor: initial_shap_colors['bgColors'],
+                    borderColor: initial_shap_colors['bdColors'],
+                    borderWidth: 1,
+                    minBarLength: 2,
+                    datalabels: {
+                      color: 'black'
+                    }
+                }]
+              };
+              
+              const configShap = {
+                type: 'bar',
+                data: shap_data,
+                plugins: [ChartDataLabels, backgroundPlugin, baseLabels],
+                options: {
+                  indexAxis: 'y',
+                  layout: {
+                    padding: {
+                      left: 40,
+                      right: 100,
+                      top: 25,
+                      bottom: 40
+                    }
+                  },
+                  parsing: {
+                    xAxisKey: 'data.effect',
+                    yAxisKey: 'factor'
+                  },
+                  plugins: {
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                      displayColors: false,
+                      callbacks: {
+                        title: (context) => getFullLabel(context[0].raw.factor),
+                        label: (context) => [`SHAP: ${context.raw.data.effect.toPrecision(3)}%`]
+                      }
+                    },
+                    datalabels: {
+                      anchor: (context) => {
+                        const anchor = [];
+                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
+                          anchor.push('end')
+                        } else {
+                          anchor.push('start')
+                        }
+                        return anchor;
+                      },
+                      align: (context) => {
+                        const align = [];
+                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
+                          align.push('right')
+                        } else {
+                          align.push('left')
+                        }
+                        return align;
+                      },
+                      formatter: (value, context) => value.data.value,
+                      font: {
+                        size: 16,
+                      },
+                    }
+                  },
+                  scales: {
+                    x: {
+                      position: 'top',
+                      beginAtZero: true,
+                      ticks: {
+                        fontSize: 20,
+                        callback: function (value, index, values) {
+                          return value + "%";
+                        }
+                      }
+                    },
+                    y: {
+                      ticks: {
+                        fontSize: 20,
+                        padding: 20,
+                        callback: function (value, index) {
+                          return getFullLabel(this.getLabelForValue(index))
+                        }
+                      }
+                    }
+                  }
+                }
+              };
+
+              function setColorShap(data) {
+                let bgColors = []
+                let bdColors = []
+                for (let i = 0; i < data.length; i++) {
+                  if (data[i].data.effect < 0) {
+                    bgColors[i] = 'rgba(54, 162, 235, 0.2)'
+                    bdColors[i] = 'rgba(54, 162, 235, 1)'
+                  } else if (data[i].data.effect > 0) {
+                    bgColors[i] = 'rgba(255, 99, 132, 0.2)'
+                    bdColors[i] = 'rgba(255, 99, 132, 1)'
+                  } else {
+                    bgColors[i] = 'rgba(75, 192, 192, 0.2)'
+                    bdColors[i] = 'rgba(75, 192, 192, 1)'
+                  }
+                }
+                return {
+                  'bgColors': bgColors,
+                  'bdColors': bdColors
+                };
+              }
+
+              function setRangeShap() {
+                const min_chart_value = document.getElementById('min_chart_shap').value
+                const max_chart_value = document.getElementById('max_chart_shap').value
+                if (min_chart_value != '' && max_chart_value != '' && min_chart_value < max_chart_value) {
+                  myShapChart.config.options.scales.x.min = min_chart_value;
+                  myShapChart.config.options.scales.x.max = max_chart_value;
+                  delete myShapChart.config.options.scales.x.suggestedMin;
+                  delete myShapChart.config.options.scales.x.suggestedMax;
+                  myShapChart.update();
+                }
+              }
+              
+              const cancer_type_shap = document.getElementById('cancer_type_shap');
+              cancer_type_shap.addEventListener('change', cancerExpShap);
+              // This function changes both the chart and the text before the chart
+              function cancerExpShap() {
+                // Change text
+                const index = cancer_type_shap.value;
+                document.getElementById('myShapText').innerHTML = generateShapExplanation(getFullLabel(index), outputs[index], base_risks[index]);
+
+                // Change chart
+                const colors = setColorShap(shap_values[cancer_type_shap.value]);
+                myShapChart.config.data.datasets[0].data = shap_values[cancer_type_shap.value];
+                myShapChart.config.data.datasets[0].backgroundColor = colors['bgColors'];
+                myShapChart.config.data.datasets[0].borderColor = colors['bdColors'];
+                setSuggestedMinAndMax(myShapChart);
+                myShapChart.update();
+              }
+            </script>
+
+            <script>
+              const myShapChart = new Chart(
+                document.getElementById('myShapChart'),
+                configShap
+              );
+              setSuggestedMinAndMax(myShapChart);
+              myShapChart.update();
             </script>
           </div>
         </div>
