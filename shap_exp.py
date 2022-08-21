@@ -1,13 +1,13 @@
 import numpy as np
 import shap
-from utils import getCheckboxValue, getAlcoholValue, getSmokeValue, getInputsMale, getInputsFemale, bases_male, bases_female
+from bases import *
 
 # <============================== Background for features ==============================>
-male_input = ["age", "alcohol_cat4", "b_chronicpan", "b_copd", "b_type2", 
-"bmi", "c_hb", "fh_gicancer", "fh_prostatecancer", "new_abdodist", "new_abdopain", "new_appetiteloss", "new_dysphagia",
-"new_gibleed", "new_haematuria", "new_haemoptysis", "new_heartburn", "new_indigestion", "new_necklump", "new_nightsweats", "new_rectalbleed",
-"new_testispain", "new_testicularlump", "new_vte", "new_weightloss", "s1_bowelchange", "s1_constipation", "s1_cough", "s1_impotence",
-"s1_nocturia", "s1_urinaryfreq", "s1_urinaryretention", "smoke_cat"]
+# male_input = ["age", "alcohol_cat4", "b_chronicpan", "b_copd", "b_type2", 
+# "bmi", "c_hb", "fh_gicancer", "fh_prostatecancer", "new_abdodist", "new_abdopain", "new_appetiteloss", "new_dysphagia",
+# "new_gibleed", "new_haematuria", "new_haemoptysis", "new_heartburn", "new_indigestion", "new_necklump", "new_nightsweats", "new_rectalbleed",
+# "new_testispain", "new_testicularlump", "new_vte", "new_weightloss", "s1_bowelchange", "s1_constipation", "s1_cough", "s1_impotence",
+# "s1_nocturia", "s1_urinaryfreq", "s1_urinaryretention", "smoke_cat"]
 
 # Male Features (used in cancer risk calculation):
 # "age_1", "age_2", "alcohol_cat4_0", "alcohol_cat4_1", "alcohol_cat4_2", "alcohol_cat4_3", "b_chronicpan", "b_copd", "b_type2", 
@@ -16,12 +16,12 @@ male_input = ["age", "alcohol_cat4", "b_chronicpan", "b_copd", "b_type2",
 # "new_testispain", "new_testicularlump", "new_vte", "new_weightloss", "s1_bowelchange", "s1_constipation", "s1_cough", "s1_impotence",
 # "s1_nocturia", "s1_urinaryfreq", "s1_urinaryretention", "smoke_cat_0", "smoke_cat_1", "smoke_cat_2", "smoke_cat_3", "smoke_cat_4"
 
-female_input = ["age", "alcohol_cat4", "b_chronicpan", "b_copd", "b_endometrial",
-"b_type2", "bmi", "c_hb", "fh_breastcancer", "fh_gicancer", "fh_ovariancancer", "new_abdodist", "new_abdopain",
-"new_appetiteloss", "new_breastlump", "new_breastpain", "new_breastskin", "new_dysphagia", "new_gibleed", "new_haematuria", 
-"new_haemoptysis", "new_heartburn", "new_imb", "new_indigestion", "new_necklump", "new_nightsweats", "new_pmb", "new_postcoital",
-"new_rectalbleed", "new_vte", "new_weightloss", "s1_bowelchange", "s1_bruising", "s1_constipation", "s1_cough",
-"smoke_cat"]
+# female_input = ["age", "alcohol_cat4", "b_chronicpan", "b_copd", "b_endometrial",
+# "b_type2", "bmi", "c_hb", "fh_breastcancer", "fh_gicancer", "fh_ovariancancer", "new_abdodist", "new_abdopain",
+# "new_appetiteloss", "new_breastlump", "new_breastpain", "new_breastskin", "new_dysphagia", "new_gibleed", "new_haematuria", 
+# "new_haemoptysis", "new_heartburn", "new_imb", "new_indigestion", "new_necklump", "new_nightsweats", "new_pmb", "new_postcoital",
+# "new_rectalbleed", "new_vte", "new_weightloss", "s1_bowelchange", "s1_bruising", "s1_constipation", "s1_cough",
+# "smoke_cat"]
 
 # Female Features (used in cancer risk calculation):
 # "age_1", "age_2", "alcohol_cat4_0", "alcohol_cat4_1", "alcohol_cat4_2", "alcohol_cat4_3", "b_chronicpan", "b_copd", "b_endometrial",
@@ -286,15 +286,9 @@ def getInputArray(form, isMale):
                 input_arr[i] = getCheckboxValue(form, female_input[i])
     return input_arr
 
-# Baselines
-# Modify these when baselines are changed
-# Caution: make sure that dtype=float is set explicitly!!!
-male_base = np.array([40,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], dtype=float)
-female_base = np.array([40,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], dtype=float)
-
 # Explainers
-male_explainer = shap.KernelExplainer(male_function, np.reshape(male_base, (1, len(male_base))))
-female_explainer = shap.KernelExplainer(female_function, np.reshape(female_base, (1, len(female_base))))
+male_explainer = shap.KernelExplainer(male_function, np.reshape(male_base_array, (1, len(male_base_array))))
+female_explainer = shap.KernelExplainer(female_function, np.reshape(female_base_array, (1, len(female_base_array))))
 
 # Base cancer risks 
 male_base_risks = {key: val for key, val in zip(male_cancers, male_explainer.expected_value)}
