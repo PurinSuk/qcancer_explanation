@@ -298,7 +298,7 @@ female_base_risks = {key: val for key, val in zip(female_cancers, female_explain
 def compute_shap_values(form, isMale):
     explainer = male_explainer if isMale else female_explainer
     input_arr = getInputArray(form, isMale)
-    return explainer.shap_values(input_arr, nsamples=500)
+    return explainer.shap_values(input_arr, nsamples=350)
 
 # <================================= Two functions that are called in main.py =================================>
 def calculateShapValuesMale(form):
