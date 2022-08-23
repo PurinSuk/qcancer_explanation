@@ -407,7 +407,7 @@
                   layout: {
                     padding: {
                       left: 40,
-                      right: 100,
+                      right: 150,
                       top: 25,
                       bottom: 40
                     }
@@ -457,6 +457,7 @@
                       font: {
                         size: 16,
                       },
+                      clamp: true,
                     }
                   },
                   scales: {
@@ -474,6 +475,7 @@
                       ticks: {
                         fontSize: 20,
                         padding: 20,
+                        labelOffset: -14,
                         callback: function (value, index) {
                           return getFullLabel(this.getLabelForValue(index))
                         }
@@ -507,7 +509,7 @@
               function setRange() {
                 const min_chart_value = document.getElementById('min_chart').value
                 const max_chart_value = document.getElementById('max_chart').value
-                if (min_chart_value != '' && max_chart_value != '' && min_chart_value < max_chart_value) {
+                if (min_chart_value != '' && max_chart_value != '' && (min_chart_value - max_chart_value) < 0) {
                   myChart.config.options.scales.x.min = min_chart_value;
                   myChart.config.options.scales.x.max = max_chart_value;
                   delete myChart.config.options.scales.x.suggestedMin;
@@ -686,7 +688,7 @@
                   layout: {
                     padding: {
                       left: 40,
-                      right: 100,
+                      right: 150,
                       top: 25,
                       bottom: 40
                     }
@@ -729,6 +731,7 @@
                       font: {
                         size: 16,
                       },
+                      clamp: true,
                     }
                   },
                   scales: {
@@ -746,6 +749,7 @@
                       ticks: {
                         fontSize: 20,
                         padding: 20,
+                        labelOffset: -14,
                         callback: function (value, index) {
                           return getFullLabel(this.getLabelForValue(index))
                         }
@@ -779,7 +783,7 @@
               function setRangeShap() {
                 const min_chart_value = document.getElementById('min_chart_shap').value
                 const max_chart_value = document.getElementById('max_chart_shap').value
-                if (min_chart_value != '' && max_chart_value != '' && min_chart_value < max_chart_value) {
+                if (min_chart_value != '' && max_chart_value != '' && (min_chart_value - max_chart_value) < 0) {
                   myShapChart.config.options.scales.x.min = min_chart_value;
                   myShapChart.config.options.scales.x.max = max_chart_value;
                   delete myShapChart.config.options.scales.x.suggestedMin;
