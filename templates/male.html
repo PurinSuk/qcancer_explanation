@@ -256,6 +256,9 @@
             <br>
           </fieldset>
         </fieldset>
+        <br>
+        <label>Include SHAP explanation?</label>
+        <input type="checkbox" id="shap_included" name="shap_included" {{ "checked" if 'shap_included' in request.form }}>
         <br><br>
         <input class="btn btn-success" type="submit" value="Submit">
         <div class="space">
@@ -288,9 +291,11 @@
           <li class="nav-item">
             <a class="nav-link" id="textual-tab" data-toggle="tab" href="#textual" role="tab" aria-controls="textual" aria-selected="false">Textual</a>
           </li>
+          {% if shap_values %}
           <li class="nav-item">
             <a class="nav-link" id="shap-tab" data-toggle="tab" href="#shap" role="tab" aria-controls="shap" aria-selected="false">SHAP</a>
           </li>
+          {% endif %}
         </ul>
 
         <div class="tab-content" id="myTabContent">
@@ -595,6 +600,7 @@
               cancer_type_text.addEventListener('change', cancerExpText);
             </script>
           </div>
+          {% if shap_values %}
           <!-- SHAP content -->
           <div class="tab-pane fade" id="shap" role="tabpanel" aria-labelledby="shap-tab">
             <br>
@@ -809,6 +815,7 @@
               myShapChart.update();
             </script>
           </div>
+          {% endif %}
         </div>
       </div>
 

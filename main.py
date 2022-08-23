@@ -18,7 +18,8 @@ def male():
     if request.method == 'POST':
         outputs = calculateOutputsMale(request.form)
         all_data = calculateAllDataMale(request.form, outputs)
-        male_shap_values = calculateShapValuesMale(request.form)
+        if 'shap_included' in request.form:
+            male_shap_values = calculateShapValuesMale(request.form)
     return render_template('male.html', outputs=outputs, all_data=all_data, labels=male_labels, base_risks=male_base_risks, shap_values=male_shap_values)
 
 @app.route('/female', methods=['GET', 'POST'])
@@ -29,7 +30,8 @@ def female():
     if request.method == 'POST':
         outputs = calculateOutputsFemale(request.form)
         all_data = calculateAllDataFemale(request.form, outputs)
-        female_shap_values = calculateShapValuesFemale(request.form)
+        if 'shap_included' in request.form:
+            female_shap_values = calculateShapValuesFemale(request.form)
     return render_template('female.html', outputs=outputs, all_data=all_data, labels=female_labels, base_risks=female_base_risks, shap_values=female_shap_values)
 
 if __name__ == "__main__":
