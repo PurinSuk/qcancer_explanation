@@ -402,14 +402,25 @@
               const baseLabels = {
                 id: 'baseLabels',
                 afterDatasetsDraw(chart, args, pluginOptions) {
-                  const { ctx, scales: { x, y } } = chart;
+                  const { ctx, config, scales: { x, y } } = chart;
                   ctx.font = '15px sans-serif';
                   ctx.fillStyle = 'gray';
 
                   chart.data.datasets[0].data.forEach((datapoint, index) => {
                     const datasetArray = [];
                     ctx.textAlign = datapoint.data.effect > 0 ? 'right' : 'left';
-                    ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index));
+                    let config_x = config._config.options.scales.x;
+                    if ('min' in config_x) {
+                      if (config_x.max < 0) {
+                        ctx.fillText(datapoint.data.base, x.getPixelForValue(config_x.max), y.getPixelForValue(index)+15);
+                      } else if (config_x.min > 0) {
+                        ctx.fillText(datapoint.data.base, x.getPixelForValue(config_x.min), y.getPixelForValue(index)+15);
+                      } else {
+                        ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index)+15);
+                      }
+                    } else {
+                      ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index)+15);
+                    }
                   })
                 }
               }
