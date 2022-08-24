@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block functions %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='common_plugins.js') }}"></script>
+
 <script>
   $(document).ready(function(){
     $('#myTab a[href="#graphical"]').on('click', function (e) {
@@ -81,16 +84,6 @@
 
 {% block content %}
 <div class="container-fluid">
-
-  {% for message in get_flashed_messages() %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
-        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-      </svg>
-      {{message}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {% endfor %}
 
   <div class="row">
     <!-- This is for user input -->
@@ -347,9 +340,6 @@
             </script>
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.1.0/chartjs-plugin-datalabels.min.js" 
-            integrity="sha512-Tfw6etYMUhL4RTki37niav99C6OHwMDB2iBT5S5piyHO+ltK2YX8Hjy9TXxhE1Gm/TmAV0uaykSpnHKFIAif/A==" 
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
             <script>
               const initial_data = all_data['blood'];
@@ -368,51 +358,11 @@
                     }
                 }]
               };
-
-              // canvas background plugin
-              const backgroundPlugin = {
-                id: 'background-plugin',
-                beforeDraw: (chart) => {
-                  const ctx = chart.canvas.getContext('2d');
-                  ctx.save();
-                  ctx.globalCompositeOperation = 'destination-over';
-                  ctx.fillStyle='white';
-                  ctx.fillRect(0, 0, chart.width, chart.height);
-                  ctx.restore();
-                }
-              }
-
-              // baseLabels plugin block
-              const baseLabels = {
-                id: 'baseLabels',
-                afterDatasetsDraw(chart, args, pluginOptions) {
-                  const { ctx, config, scales: { x, y } } = chart;
-                  ctx.font = '15px sans-serif';
-                  ctx.fillStyle = 'gray';
-
-                  chart.data.datasets[0].data.forEach((datapoint, index) => {
-                    const datasetArray = [];
-                    ctx.textAlign = datapoint.data.effect > 0 ? 'right' : 'left';
-                    let config_x = config._config.options.scales.x;
-                    if ('min' in config_x) {
-                      if (config_x.max < 0) {
-                        ctx.fillText(datapoint.data.base, x.getPixelForValue(config_x.max), y.getPixelForValue(index)+15);
-                      } else if (config_x.min > 0) {
-                        ctx.fillText(datapoint.data.base, x.getPixelForValue(config_x.min), y.getPixelForValue(index)+15);
-                      } else {
-                        ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index)+15);
-                      }
-                    } else {
-                      ctx.fillText(datapoint.data.base, x.getPixelForValue(0), y.getPixelForValue(index)+15);
-                    }
-                  })
-                }
-              }
               
               const config = {
                 type: 'bar',
                 data: data,
-                plugins: [ChartDataLabels, backgroundPlugin, baseLabels],
+                plugins: [backgroundPlugin, baseLabels, valueLabels],
                 options: {
                   indexAxis: 'y',
                   layout: {
@@ -444,31 +394,6 @@
                         title: (context) => getFullLabel(context[0].raw.factor),
                         label: (context) => [`effect: ${context.raw.data.effect.toPrecision(3)}%`]
                       }
-                    },
-                    datalabels: {
-                      anchor: (context) => {
-                        const anchor = [];
-                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
-                          anchor.push('end')
-                        } else {
-                          anchor.push('start')
-                        }
-                        return anchor;
-                      },
-                      align: (context) => {
-                        const align = [];
-                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
-                          align.push('right')
-                        } else {
-                          align.push('left')
-                        }
-                        return align;
-                      },
-                      formatter: (value, context) => value.data.value,
-                      font: {
-                        size: 16,
-                      },
-                      clamp: true,
                     }
                   },
                   scales: {
@@ -693,7 +618,7 @@
               const configShap = {
                 type: 'bar',
                 data: shap_data,
-                plugins: [ChartDataLabels, backgroundPlugin, baseLabels],
+                plugins: [backgroundPlugin, baseLabels, valueLabels],
                 options: {
                   indexAxis: 'y',
                   layout: {
@@ -718,31 +643,6 @@
                         title: (context) => getFullLabel(context[0].raw.factor),
                         label: (context) => [`SHAP: ${context.raw.data.effect.toPrecision(3)}%`]
                       }
-                    },
-                    datalabels: {
-                      anchor: (context) => {
-                        const anchor = [];
-                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
-                          anchor.push('end')
-                        } else {
-                          anchor.push('start')
-                        }
-                        return anchor;
-                      },
-                      align: (context) => {
-                        const align = [];
-                        if (context.dataset.data[context.dataIndex].data.effect > 0) {
-                          align.push('right')
-                        } else {
-                          align.push('left')
-                        }
-                        return align;
-                      },
-                      formatter: (value, context) => value.data.value,
-                      font: {
-                        size: 16,
-                      },
-                      clamp: true,
                     }
                   },
                   scales: {
