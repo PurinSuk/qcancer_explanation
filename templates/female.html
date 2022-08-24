@@ -357,6 +357,7 @@
 
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+            <!-- This part includes all the necessary information and functions used in counterfactual bar chart -->
             <script>
               const initial_data = all_data['blood'];
               const initial_colors = setColor(initial_data);
@@ -617,6 +618,7 @@
             </div>
             <br><br>
 
+            <!-- This part includes all the necessary information and functions used in SHAP chart -->
             <script>
               const initial_shap_data = shap_values['blood'];
               const initial_shap_colors = setColorShap(initial_shap_data);
@@ -740,7 +742,8 @@
                 myShapChart.update();
               }
             </script>
-
+            
+            <!-- This script create and set the initial ranges for SHAP chart -->
             <script>
               const myShapChart = new Chart(
                 document.getElementById('myShapChart'),
