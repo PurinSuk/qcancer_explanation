@@ -11,4 +11,4 @@ Step 1: Install relevant packages (only for the first time):\
 `pip install -r requirements.txt`
 
 Step 2: Run the app:\
-`python main.py`
+`python main.py` 
