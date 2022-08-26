@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import Flask, url_for, render_template, request
 
 from utils import calculateOutputsMale, calculateAllDataMale, calculateOutputsFemale, calculateAllDataFemale, male_labels, female_labels
 
@@ -7,8 +7,6 @@ from shap_exp import male_base_risks, female_base_risks, calculateShapValuesMale
 app = Flask(__name__)
 
 app.config["JSON_SORT_KEYS"] = False
-app.jinja_env.globals.update(zip=zip)
-app.secret_key = "B6i6zsH!C6ez"
 
 @app.route('/', methods=["GET", "POST"])
 def male():
