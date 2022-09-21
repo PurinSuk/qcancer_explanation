@@ -248,6 +248,8 @@
             const outputs = {{ outputs|tojson|safe }};
             const base_risks = {{ base_risks|tojson|safe }};
           </script>
+
+          <!-- Part 1: Graphical ctx -->
           <div class="tab-pane fade show active" id="graphical" role="tabpanel" aria-labelledby="graphical-tab">
             <br>
             <span>
@@ -272,6 +274,8 @@
             <input type="number" id="max_chart" name="max_chart">
             <div class="space"></div>
             <button type="button" onClick="setRange()">Set axis range</button>
+
+            <!-- !!! This is where we create the canvas for the chart -->
             <div class="chartBox">
               <canvas id="myChart"></canvas>
               <div class="d-flex justify-content-center">
@@ -430,6 +434,7 @@
             </script>
           </div>
 
+          <!-- Part 2: Textual ctx -->
           <div class="tab-pane fade" id="textual" role="tabpanel" aria-labelledby="textual-tab">
             <br>
             <label>Select cancer type: </label>
@@ -457,6 +462,8 @@
               cancer_type_text.addEventListener('change', cancerExpText);
             </script>
           </div>
+
+          <!-- Part 3: SHAP -->
           {% if shap_values %}
           <!-- SHAP content -->
           <div class="tab-pane fade" id="shap" role="tabpanel" aria-labelledby="shap-tab">
@@ -492,6 +499,7 @@
               document.getElementById('myShapText').innerHTML = generateShapExplanation('Blood', outputs['blood'], base_risks['blood']);
             </script>
 
+            <!-- !!! This is where we create the canvas for the chart -->
             <div class="chartBox">
               <canvas id="myShapChart"></canvas>
               <div class="d-flex justify-content-center">
