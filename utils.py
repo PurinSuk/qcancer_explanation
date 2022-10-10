@@ -2,9 +2,6 @@ import math
 import numpy as np
 from collections import defaultdict
 
-from qcancer_male.qcancer_male_funcs import *
-from qcancer_female.qcancer_female_funcs import *
-
 from bases import bases_male, bases_female, male_input, female_input, getInputsMale, getInputsFemale, male_base_array, female_base_array
 from shap_exp import getInputArray, transform_input, male_function, female_function
 
